@@ -1,0 +1,21 @@
+Time,Amount,Class,Transaction_Type,Risk_Level,Amount_Category
+0,149.62,0,Normal,Low,Medium
+1,2.69,0,Normal,Low,Low
+2,378.66,0,Normal,Low,High
+3,123.50,0,Normal,Low,Medium
+4,84.90,0,Normal,Low,Medium
+5,48.75,0,Normal,Low,Low
+6,210.00,0,Normal,Low,High
+7,18.99,0,Normal,Low,Low
+8,1200.00,1,Fraud,High,Very High
+9,75.20,0,Normal,Low,Medium
+10,999.99,1,Fraud,High,Very High
+11,15.99,0,Normal,Low,Low
+12,95.10,0,Normal,Low,Medium
+13,5.50,0,Normal,Low,Low
+14,1549.99,1,Fraud,High,Very High
+15,38.25,0,Normal,Low,Low
+16,260.50,0,Normal,Medium,High
+17,12.40,0,Normal,Low,Low
+18,2100.00,1,Fraud,Critical,Very High
+19,49.99,0,Normal,Low,Low
