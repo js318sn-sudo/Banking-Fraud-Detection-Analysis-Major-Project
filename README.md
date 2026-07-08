@@ -197,10 +197,11 @@ The dashboard includes the following key performance indicators:
 Banking-Fraud-Detection-Analysis-Major-Project/
 │
 ├── Banking_Fraud_Detection_Analysis_Major_Project.ipynb
+├── creditcard.csv
 ├── cleaned_creditcard.csv
 ├── final_creditcard_dataset.csv
 ├── Banking_Fraud_Detection_Dashboard.png
-├── README.md
+└── README.md
 ```
 
 ---
