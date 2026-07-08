@@ -46,6 +46,30 @@ The objective of this project is to analyze a real-world credit card transaction
 
 **Note:** The original dataset may not be included in this repository because it can exceed GitHub's file size limit. Download the dataset separately and place `creditcard.csv` in the project folder before running the notebook.
 
+## About the Dataset
+
+This project uses the **Credit Card Fraud Detection Dataset**, a real-world dataset widely used for fraud detection research and data analytics. It contains anonymized credit card transactions made by European cardholders over a two-day period.
+
+The dataset consists of **284,807 transactions** with **31 features**, including transaction time, transaction amount, anonymized numerical features (`V1`–`V28`), and a target variable (`Class`) indicating whether a transaction is legitimate or fraudulent.
+
+### Dataset Features
+
+| Feature | Description                                                                      |
+| ------- | -------------------------------------------------------------------------------- |
+| Time    | Time elapsed since the first transaction in the dataset                          |
+| V1–V28  | Anonymized numerical features generated using Principal Component Analysis (PCA) |
+| Amount  | Transaction amount                                                               |
+| Class   | Target variable (0 = Legitimate Transaction, 1 = Fraudulent Transaction)         |
+
+### Dataset Summary
+
+* Total Transactions: **284,807**
+* Total Features: **31**
+* Legitimate Transactions (Class = 0): **284,315**
+* Fraudulent Transactions (Class = 1): **492**
+* Dataset Type: Highly imbalanced binary classification dataset
+
+
 ---
 
 ## Technologies Used
