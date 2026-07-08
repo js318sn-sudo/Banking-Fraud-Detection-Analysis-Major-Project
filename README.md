@@ -200,7 +200,7 @@ Banking-Fraud-Detection-Analysis-Major-Project/
 ├── creditcard.csv
 ├── cleaned_creditcard.csv
 ├── final_creditcard_dataset.csv
-├── Banking_Fraud_Detection_Dashboard.png
+├── Banking_Fraud_Detection_Analysis_Dashboard.png
 └── README.md
 ```
 
