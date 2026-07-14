@@ -19,7 +19,8 @@ The objective of this project is to analyze a real-world credit card transaction
 
 ## Dashboard
 
-![Banking Fraud Detection Dashboard](images/Banking_Fraud_Detection_Dashboard.png)
+
+![Banking Fraud Detection Dashboard](Banking_Fraud_Detection_Dashboard.png)
 
 ___
 
