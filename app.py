@@ -1,11 +1,13 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 
-# -----------------------------------------------------
-# Page Configuration
-# -----------------------------------------------------
+# ============================================
+# PAGE CONFIGURATION
+# ============================================
+
 st.set_page_config(
     page_title="🏦 Banking Fraud Detection Analysis",
     page_icon="🏦",
@@ -13,465 +15,1008 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# -----------------------------------------------------
-# Custom CSS
-# -----------------------------------------------------
+# ============================================
+# CUSTOM CSS
+# ============================================
+
 st.markdown("""
 <style>
+
 .main{
-    background-color:#F5F7FA;
+    background-color:#f5f7fa;
 }
+
+.block-container{
+    padding-top:1rem;
+}
+
 h1,h2,h3{
     color:#003366;
 }
+
 [data-testid="metric-container"]{
     background:white;
-    border-radius:10px;
-    padding:15px;
-    box-shadow:0px 0px 8px rgba(0,0,0,0.15);
+    padding:18px;
+    border-radius:12px;
+    box-shadow:0px 3px 12px rgba(0,0,0,0.15);
+    border-left:6px solid #0066cc;
 }
-.sidebar .sidebar-content{
-    background:#002B5B;
+
+section[data-testid="stSidebar"]{
+    background:#002b5b;
 }
+
+footer{
+    visibility:hidden;
+}
+
+#MainMenu{
+    visibility:hidden;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------------------------------
-# Title
-# -----------------------------------------------------
-st.title("🏦 Banking Fraud Detection Analysis Dashboard")
-st.markdown("### End-to-End Data Analytics Major Project")
+# ============================================
+# LOAD DATA
+# ============================================
 
-st.write("---")
-
-# -----------------------------------------------------
-# Load Dataset
-# -----------------------------------------------------
 @st.cache_data
 def load_data():
-    return pd.read_csv("creditcard.csv")
 
-try:
-    df = load_data()
+    df = pd.read_csv("creditcard.csv")
 
-    st.success("✅ Dataset Loaded Successfully")
+    df["Hour"] = (df["Time"] // 3600).astype(int)
 
-    # -------------------------------------------------
-    # Sidebar
-    # -------------------------------------------------
-    st.sidebar.title("Navigation")
-
-    page = st.sidebar.radio(
-        "Select Section",
-        [
-            "Dashboard",
-            "Dataset Overview",
-            "EDA",
-            "Statistics",
-            "Business Insights"
-        ]
+    df["High_Value"] = np.where(
+        df["Amount"] > 1000,
+        "Yes",
+        "No"
     )
 
-    # -------------------------------------------------
-    # KPI Calculation
-    # -------------------------------------------------
-    total_transactions = len(df)
-    fraud_transactions = int(df["Class"].sum())
-    legitimate_transactions = total_transactions - fraud_transactions
-    fraud_rate = round((fraud_transactions / total_transactions) * 100, 4)
-    total_amount = round(df["Amount"].sum(), 2)
-    average_amount = round(df["Amount"].mean(), 2)
+    return df
 
-    # -------------------------------------------------
-    # Dashboard
-    # -------------------------------------------------
-    if page == "Dashboard":
+try:
 
-        st.header("Executive Dashboard")
+    df = load_data()
 
-        c1, c2, c3 = st.columns(3)
+except FileNotFoundError:
 
-        c1.metric("Total Transactions", f"{total_transactions:,}")
-        c2.metric("Fraud Transactions", f"{fraud_transactions:,}")
-        c3.metric("Legitimate Transactions", f"{legitimate_transactions:,}")
+    st.error("❌ creditcard.csv not found.")
+    st.stop()
 
-        c4, c5, c6 = st.columns(3)
+# ============================================
+# SIDEBAR
+# ============================================
 
-        c4.metric("Fraud Rate", f"{fraud_rate}%")
-        c5.metric("Total Amount", f"${total_amount:,.2f}")
-        c6.metric("Average Amount", f"${average_amount}")
+st.sidebar.title("🏦 Banking Fraud Detection")
 
-        st.write("---")
+page = st.sidebar.radio(
+    "Navigation",
+    [
+        "Dashboard",
+        "Dataset Overview",
+        "EDA",
+        "Statistical Analysis",
+        "Business Insights",
+        "About Project"
+    ]
+)
 
-        left, right = st.columns(2)
+st.sidebar.markdown("---")
 
-        with left:
-            st.subheader("Fraud Distribution")
+st.sidebar.success("Major Project")
 
-            fig = px.pie(
-                names=["Legitimate", "Fraud"],
-                values=[legitimate_transactions, fraud_transactions],
-                color=["Legitimate","Fraud"],
-                color_discrete_sequence=["green","red"]
-            )
+st.sidebar.write("Python")
+st.sidebar.write("Pandas")
+st.sidebar.write("NumPy")
+st.sidebar.write("Plotly")
+st.sidebar.write("Streamlit")
+st.sidebar.write("SQL")
+st.sidebar.write("Power BI")
 
-            st.plotly_chart(fig, use_container_width=True)
+# ============================================
+# KPI CALCULATIONS
+# ============================================
 
-        with right:
+total_transactions = len(df)
 
-            st.subheader("Transaction Class")
+fraud_transactions = int(df["Class"].sum())
 
-            fig2 = px.bar(
-                x=["Legitimate","Fraud"],
-                y=[legitimate_transactions, fraud_transactions],
-                color=["Legitimate","Fraud"],
-                color_discrete_sequence=["green","red"]
-            )
+legitimate_transactions = total_transactions - fraud_transactions
 
-            st.plotly_chart(fig2, use_container_width=True)
+fraud_rate = round(
+    (fraud_transactions / total_transactions) * 100,
+    4
+)
+
+total_amount = round(df["Amount"].sum(), 2)
+
+average_amount = round(df["Amount"].mean(), 2)
+
+highest_amount = round(df["Amount"].max(), 2)
+
+high_value_transactions = len(df[df["Amount"] > 1000])
+# ============================================
+# DASHBOARD
+# ============================================
+
+if page == "Dashboard":
+
+    st.title("🏦 Banking Fraud Detection Dashboard")
+
+    st.markdown("""
+    Welcome to the **Banking Fraud Detection Analysis Dashboard**.
+
+    This dashboard provides an interactive analysis of fraudulent and
+    legitimate credit card transactions.
+    """)
+
+    st.write("---")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric(
+        "Transactions",
+        f"{total_transactions:,}"
+    )
+
+    col2.metric(
+        "Fraud",
+        f"{fraud_transactions:,}"
+    )
+
+    col3.metric(
+        "Legitimate",
+        f"{legitimate_transactions:,}"
+    )
+
+    col4.metric(
+        "Fraud Rate",
+        f"{fraud_rate}%"
+    )
+
+    st.write("")
+
+    col5, col6, col7, col8 = st.columns(4)
+
+    col5.metric(
+        "Total Amount",
+        f"${total_amount:,.2f}"
+    )
+
+    col6.metric(
+        "Average Amount",
+        f"${average_amount:,.2f}"
+    )
+
+    col7.metric(
+        "Highest Amount",
+        f"${highest_amount:,.2f}"
+    )
+
+    col8.metric(
+        "High Value",
+        f"{high_value_transactions:,}"
+    )
+
+    st.write("---")
+
+    left, right = st.columns(2)
+
+    with left:
+
+        st.subheader("Fraud Distribution")
+
+        pie_df = pd.DataFrame({
+            "Type": [
+                "Legitimate",
+                "Fraud"
+            ],
+            "Count": [
+                legitimate_transactions,
+                fraud_transactions
+            ]
+        })
+
+        fig = px.pie(
+            pie_df,
+            names="Type",
+            values="Count",
+            hole=0.5,
+            color="Type",
+            color_discrete_map={
+                "Legitimate": "#2ecc71",
+                "Fraud": "#e74c3c"
+            }
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
+
+    with right:
 
         st.subheader("Transaction Amount Distribution")
 
-        fig3 = px.histogram(
+        fig = px.histogram(
             df,
             x="Amount",
-            nbins=100,
+            nbins=60,
             color_discrete_sequence=["royalblue"]
         )
 
-        st.plotly_chart(fig3, use_container_width=True)
+        fig.update_layout(
+            xaxis_title="Transaction Amount",
+            yaxis_title="Frequency"
+        )
 
-    # -------------------------------------------------
-    # Dataset Overview
-    # -------------------------------------------------
-    elif page == "Dataset Overview":
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
 
-        st.header("Dataset Overview")
+    st.write("---")
 
-        st.write("Shape:", df.shape)
+    st.subheader("Hourly Transactions")
 
-        st.write("Columns")
+    hourly = (
+        df.groupby("Hour")
+        .size()
+        .reset_index(name="Transactions")
+    )
 
-        st.write(df.columns.tolist())
+    fig = px.line(
+        hourly,
+        x="Hour",
+        y="Transactions",
+        markers=True
+    )
 
-        st.write("Preview")
+    fig.update_layout(
+        xaxis_title="Hour of Day",
+        yaxis_title="Transactions"
+    )
 
-        st.dataframe(df.head(20), use_container_width=True)
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
 
-        st.write("Missing Values")
+    st.write("---")
+    # ============================================
+# DATASET OVERVIEW
+# ============================================
 
-        st.dataframe(df.isnull().sum())
+elif page == "Dataset Overview":
 
-        st.write("Statistics")
+    st.title("📂 Dataset Overview")
 
-        st.dataframe(df.describe())
+    st.markdown(
+        "Explore the structure and quality of the credit card transaction dataset."
+    )
 
-except FileNotFoundError:
-    st.error("❌ creditcard.csv not found. Upload the dataset to the project folder.")
-        # -------------------------------------------------
-    # EDA
-    # -------------------------------------------------
-    elif page == "EDA":
+    st.write("---")
 
-        st.header("📊 Exploratory Data Analysis")
+    c1, c2, c3, c4 = st.columns(4)
 
-        st.sidebar.subheader("Filters")
+    c1.metric("Rows", df.shape[0])
+    c2.metric("Columns", df.shape[1])
+    c3.metric("Fraud Cases", fraud_transactions)
+    c4.metric("Legitimate", legitimate_transactions)
 
-        amount_range = st.sidebar.slider(
-            "Transaction Amount",
+    st.write("---")
+
+    st.subheader("Dataset Preview")
+
+    rows = st.slider(
+        "Select Number of Rows",
+        5,
+        50,
+        10
+    )
+
+    st.dataframe(
+        df.head(rows),
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    st.subheader("Column Information")
+
+    info_df = pd.DataFrame({
+        "Column": df.columns,
+        "Data Type": df.dtypes.astype(str),
+        "Missing Values": df.isnull().sum().values
+    })
+
+    st.dataframe(
+        info_df,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    st.subheader("Missing Value Analysis")
+
+    missing = df.isnull().sum().reset_index()
+
+    missing.columns = [
+        "Column",
+        "Missing"
+    ]
+
+    fig = px.bar(
+        missing,
+        x="Column",
+        y="Missing",
+        color="Missing",
+        color_continuous_scale="Blues"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    st.success(
+        f"Total Missing Values : {df.isnull().sum().sum()}"
+    )
+
+    st.write("---")
+
+    st.subheader("Duplicate Records")
+
+    duplicates = df.duplicated().sum()
+
+    c1, c2 = st.columns(2)
+
+    c1.metric(
+        "Duplicate Rows",
+        duplicates
+    )
+
+    c2.metric(
+        "Unique Rows",
+        len(df) - duplicates
+    )
+
+    st.write("---")
+
+    st.subheader("Dataset Statistics")
+
+    st.dataframe(
+        df.describe().T,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    st.subheader("Transaction Class Distribution")
+
+    class_df = (
+        df["Class"]
+        .value_counts()
+        .rename(index={
+            0: "Legitimate",
+            1: "Fraud"
+        })
+        .reset_index()
+    )
+
+    class_df.columns = [
+        "Transaction",
+        "Count"
+    ]
+
+    fig = px.bar(
+        class_df,
+        x="Transaction",
+        y="Count",
+        color="Transaction",
+        color_discrete_map={
+            "Legitimate": "#2ecc71",
+            "Fraud": "#e74c3c"
+        }
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    st.subheader("Correlation Heatmap")
+
+    corr = df.corr(numeric_only=True)
+
+    fig = px.imshow(
+        corr,
+        color_continuous_scale="RdBu_r",
+        aspect="auto"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    csv = df.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        "📥 Download Dataset",
+        csv,
+        "creditcard.csv",
+        "text/csv"
+    )
+    # ============================================
+# EXPLORATORY DATA ANALYSIS
+# ============================================
+
+elif page == "EDA":
+
+    st.title("📊 Exploratory Data Analysis")
+
+    st.markdown(
+        "Interactive analysis of transaction patterns and fraud."
+    )
+
+    st.write("---")
+
+    # Sidebar Filters
+    st.sidebar.subheader("EDA Filters")
+
+    transaction_type = st.sidebar.selectbox(
+        "Transaction Type",
+        ["All", "Legitimate", "Fraud"]
+    )
+
+    amount_range = st.sidebar.slider(
+        "Amount Range",
+        float(df["Amount"].min()),
+        float(df["Amount"].max()),
+        (
             float(df["Amount"].min()),
-            float(df["Amount"].max()),
-            (
-                float(df["Amount"].min()),
-                float(df["Amount"].max())
-            )
+            float(df["Amount"].max())
         )
+    )
 
-        class_filter = st.sidebar.selectbox(
-            "Transaction Type",
-            ["All", "Legitimate", "Fraud"]
-        )
+    filtered_df = df[
+        (df["Amount"] >= amount_range[0]) &
+        (df["Amount"] <= amount_range[1])
+    ]
 
-        filtered_df = df[
-            (df["Amount"] >= amount_range[0]) &
-            (df["Amount"] <= amount_range[1])
+    if transaction_type == "Fraud":
+        filtered_df = filtered_df[
+            filtered_df["Class"] == 1
         ]
 
-        if class_filter == "Legitimate":
-            filtered_df = filtered_df[filtered_df["Class"] == 0]
+    elif transaction_type == "Legitimate":
+        filtered_df = filtered_df[
+            filtered_df["Class"] == 0
+        ]
 
-        elif class_filter == "Fraud":
-            filtered_df = filtered_df[filtered_df["Class"] == 1]
+    st.success(f"Filtered Records : {len(filtered_df):,}")
 
-        st.success(f"Filtered Records : {len(filtered_df):,}")
+    st.write("---")
 
-        st.write("---")
+    # ================================
+    # Amount Histogram
+    # ================================
 
-        col1, col2 = st.columns(2)
+    left, right = st.columns(2)
 
-        with col1:
+    with left:
 
-            st.subheader("Transaction Amount Distribution")
-
-            fig = px.histogram(
-                filtered_df,
-                x="Amount",
-                nbins=80,
-                color_discrete_sequence=["royalblue"]
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
-
-        with col2:
-
-            st.subheader("Fraud vs Legitimate")
-
-            class_counts = filtered_df["Class"].value_counts().reset_index()
-            class_counts.columns = ["Class", "Count"]
-
-            class_counts["Class"] = class_counts["Class"].replace({
-                0: "Legitimate",
-                1: "Fraud"
-            })
-
-            fig = px.bar(
-                class_counts,
-                x="Class",
-                y="Count",
-                color="Class",
-                color_discrete_sequence=["green", "red"]
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
-
-        st.write("---")
-
-        st.subheader("Transaction Amount Box Plot")
-
-        fig = px.box(
-            filtered_df,
-            y="Amount",
-            color="Class",
-            color_discrete_sequence=["green", "red"]
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-        st.write("---")
-
-        st.subheader("Time vs Amount")
-
-        fig = px.scatter(
-            filtered_df.sample(min(5000, len(filtered_df))),
-            x="Time",
-            y="Amount",
-            color=filtered_df.sample(min(5000, len(filtered_df)))["Class"].astype(str),
-            opacity=0.6
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-        st.write("---")
-
-        st.subheader("Top 20 Highest Transactions")
-
-        top20 = filtered_df.nlargest(20, "Amount")
-
-        st.dataframe(top20, use_container_width=True)
-
-        st.write("---")
-
-        st.subheader("Correlation Heatmap")
-
-        corr = filtered_df.corr(numeric_only=True)
-
-        fig = px.imshow(
-            corr,
-            color_continuous_scale="RdBu_r",
-            aspect="auto",
-            text_auto=False
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-        st.write("---")
-
-        st.subheader("Amount Distribution by Fraud")
-
-        fig = px.violin(
-            filtered_df,
-            x="Class",
-            y="Amount",
-            box=True,
-            points="outliers",
-            color="Class",
-            color_discrete_sequence=["green", "red"]
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-        st.write("---")
-
-        st.subheader("Feature Selection")
-
-        feature = st.selectbox(
-            "Select PCA Feature",
-            [col for col in filtered_df.columns if col.startswith("V")]
-        )
+        st.subheader("Transaction Amount")
 
         fig = px.histogram(
             filtered_df,
-            x=feature,
-            color="Class",
-            nbins=80,
-            barmode="overlay",
-            color_discrete_sequence=["green", "red"]
+            x="Amount",
+            nbins=70,
+            color_discrete_sequence=["royalblue"]
         )
 
-        st.plotly_chart(fig, use_container_width=True)
-    # -------------------------------------------------
-    # Statistics
-    # -------------------------------------------------
-    elif page == "Statistics":
-
-        st.header("📈 Statistical Analysis")
-
-        col1, col2, col3 = st.columns(3)
-
-        col1.metric("Mean Amount", f"${df['Amount'].mean():.2f}")
-        col2.metric("Median Amount", f"${df['Amount'].median():.2f}")
-        col3.metric("Mode Amount", f"${df['Amount'].mode()[0]:.2f}")
-
-        col4, col5, col6 = st.columns(3)
-
-        col4.metric("Maximum", f"${df['Amount'].max():.2f}")
-        col5.metric("Minimum", f"${df['Amount'].min():.2f}")
-        col6.metric("Std Deviation", f"{df['Amount'].std():.2f}")
-
-        st.write("---")
-
-        st.subheader("Descriptive Statistics")
-
-        st.dataframe(df.describe(), use_container_width=True)
-
-        st.write("---")
-
-        st.subheader("Correlation Matrix")
-
-        corr = df.corr(numeric_only=True)
-
-        fig = px.imshow(
-            corr,
-            color_continuous_scale="Viridis",
-            aspect="auto"
+        st.plotly_chart(
+            fig,
+            use_container_width=True
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+    with right:
 
-        st.write("---")
+        st.subheader("Fraud Comparison")
+
+        fraud_df = (
+            filtered_df["Class"]
+            .value_counts()
+            .rename(index={
+                0: "Legitimate",
+                1: "Fraud"
+            })
+            .reset_index()
+        )
+
+        fraud_df.columns = [
+            "Transaction",
+            "Count"
+        ]
+
+        fig = px.bar(
+            fraud_df,
+            x="Transaction",
+            y="Count",
+            color="Transaction",
+            color_discrete_map={
+                "Legitimate": "#2ecc71",
+                "Fraud": "#e74c3c"
+            }
+        )
+
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
+
+    st.write("---")
+
+    # ================================
+    # Box Plot
+    # ================================
+
+    st.subheader("Amount Box Plot")
+
+    fig = px.box(
+        filtered_df,
+        x="Class",
+        y="Amount",
+        color="Class",
+        color_discrete_sequence=[
+            "#2ecc71",
+            "#e74c3c"
+        ]
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    # ================================
+    # Scatter Plot
+    # ================================
+
+    st.subheader("Time vs Amount")
+
+    sample_df = filtered_df.sample(
+        min(len(filtered_df), 5000),
+        random_state=42
+    )
+
+    fig = px.scatter(
+        sample_df,
+        x="Time",
+        y="Amount",
+        color=sample_df["Class"].astype(str),
+        opacity=0.6
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    # ================================
+    # Hourly Transactions
+    # ================================
+
+    st.subheader("Hourly Transactions")
+
+    hourly_df = (
+        filtered_df.groupby("Hour")
+        .size()
+        .reset_index(name="Transactions")
+    )
+
+    fig = px.line(
+        hourly_df,
+        x="Hour",
+        y="Transactions",
+        markers=True
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    # ================================
+    # Top Transactions
+    # ================================
+
+    st.subheader("Top 20 Transactions")
+
+    top20 = filtered_df.nlargest(
+        20,
+        "Amount"
+    )[
+        ["Time", "Amount", "Class"]
+    ]
+
+    st.dataframe(
+        top20,
+        use_container_width=True,
+        hide_index=True
+    )
+
+    st.write("---")
+
+    # ================================
+    # PCA Feature Analysis
+    # ================================
+
+    st.subheader("PCA Feature Analysis")
+
+    feature = st.selectbox(
+        "Choose PCA Feature",
+        [col for col in df.columns if col.startswith("V")]
+    )
+
+    fig = px.histogram(
+        filtered_df,
+        x=feature,
+        color="Class",
+        nbins=60,
+        barmode="overlay"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+    # ============================================
+# STATISTICAL ANALYSIS
+# ============================================
+
+elif page == "Statistical Analysis":
+
+    st.title("📈 Statistical Analysis")
+
+    st.markdown(
+        "Comprehensive statistical summary of the transaction dataset."
+    )
+
+    st.write("---")
+
+    # =====================================
+    # KPI Statistics
+    # =====================================
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric(
+        "Mean",
+        f"${df['Amount'].mean():.2f}"
+    )
+
+    col2.metric(
+        "Median",
+        f"${df['Amount'].median():.2f}"
+    )
+
+    col3.metric(
+        "Mode",
+        f"${df['Amount'].mode()[0]:.2f}"
+    )
+
+    col4.metric(
+        "Std Dev",
+        f"{df['Amount'].std():.2f}"
+    )
+
+    st.write("")
+
+    col5, col6, col7, col8 = st.columns(4)
+
+    col5.metric(
+        "Variance",
+        f"{df['Amount'].var():.2f}"
+    )
+
+    col6.metric(
+        "Minimum",
+        f"${df['Amount'].min():.2f}"
+    )
+
+    col7.metric(
+        "Maximum",
+        f"${df['Amount'].max():.2f}"
+    )
+
+    col8.metric(
+        "Range",
+        f"${df['Amount'].max()-df['Amount'].min():.2f}"
+    )
+
+    st.write("---")
+
+    # =====================================
+    # Descriptive Statistics
+    # =====================================
+
+    st.subheader("📋 Descriptive Statistics")
+
+    st.dataframe(
+        df.describe().T,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    # =====================================
+    # Quartiles
+    # =====================================
+
+    st.subheader("Quartile Analysis")
+
+    quartiles = pd.DataFrame({
+        "Statistic":[
+            "Q1 (25%)",
+            "Median (50%)",
+            "Q3 (75%)"
+        ],
+        "Value":[
+            df["Amount"].quantile(0.25),
+            df["Amount"].quantile(0.50),
+            df["Amount"].quantile(0.75)
+        ]
+    })
+
+    st.dataframe(
+        quartiles,
+        use_container_width=True,
+        hide_index=True
+    )
+
+    st.write("---")
+
+    # =====================================
+    # Distribution
+    # =====================================
+
+    st.subheader("Distribution of Amount")
+
+    fig = px.histogram(
+        df,
+        x="Amount",
+        marginal="box",
+        nbins=80,
+        color_discrete_sequence=["royalblue"]
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    # =====================================
+    # Correlation
+    # =====================================
+
+    st.subheader("Correlation Matrix")
+
+    corr = df.corr(numeric_only=True)
+
+    fig = px.imshow(
+        corr,
+        color_continuous_scale="Viridis",
+        aspect="auto"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    # =====================================
+    # Skewness & Kurtosis
+    # =====================================
+
+    left, right = st.columns(2)
+
+    with left:
 
         st.subheader("Skewness")
 
-        st.dataframe(df.skew(numeric_only=True).to_frame("Skewness"))
+        skew_df = pd.DataFrame({
+            "Feature": df.columns,
+            "Skewness": df.skew(numeric_only=True).values
+        })
+
+        st.dataframe(
+            skew_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
+    with right:
 
         st.subheader("Kurtosis")
 
-        st.dataframe(df.kurtosis(numeric_only=True).to_frame("Kurtosis"))
+        kurt_df = pd.DataFrame({
+            "Feature": df.columns,
+            "Kurtosis": df.kurtosis(numeric_only=True).values
+        })
 
-    # -------------------------------------------------
-    # Business Insights
-    # -------------------------------------------------
-
-    elif page == "Business Insights":
-
-        st.header("💼 Business Insights")
-
-        fraud_rate = (fraud_transactions / total_transactions) * 100
-
-        st.info(f"Fraud Rate : {fraud_rate:.4f}%")
-
-        high_value = df[df["Amount"] > 1000]
-
-        fraud_high = high_value[high_value["Class"] == 1]
-
-        st.metric("High Value Transactions", len(high_value))
-
-        st.metric("High Value Fraud", len(fraud_high))
-
-        st.write("---")
-
-        st.success("### Key Findings")
-
-        st.markdown("""
-        ✅ Fraud transactions are extremely rare.
-
-        ✅ Dataset is highly imbalanced.
-
-        ✅ Most transactions are low-value.
-
-        ✅ High-value transactions require additional verification.
-
-        ✅ Feature Engineering improves fraud detection.
-
-        ✅ Time-based analysis reveals hidden fraud patterns.
-
-        ✅ Continuous monitoring is recommended.
-        """)
-
-        st.write("---")
-
-        st.warning("### Recommendations")
-
-        st.markdown("""
-        • Deploy Machine Learning models
-
-        • Enable Real-Time Fraud Detection
-
-        • Monitor High Value Transactions
-
-        • Improve Customer Authentication
-
-        • Build Interactive Power BI Dashboards
-
-        • Automate Fraud Alerts
-        """)
-
-        st.write("---")
-
-        st.subheader("Fraud Percentage")
-
-        pie = px.pie(
-            names=["Legitimate", "Fraud"],
-            values=[legitimate_transactions, fraud_transactions],
-            hole=0.5,
-            color_discrete_sequence=["green", "red"]
+        st.dataframe(
+            kurt_df,
+            use_container_width=True,
+            hide_index=True
         )
 
-        st.plotly_chart(pie, use_container_width=True)
+    st.write("---")
 
-        st.write("---")
+    # =====================================
+    # Insights
+    # =====================================
 
-        st.subheader("Download Dataset")
+    st.success("""
+### 📊 Statistical Insights
 
-        csv = df.to_csv(index=False).encode("utf-8")
+✅ Fraud transactions represent a very small percentage of total transactions.
 
-        st.download_button(
-            "📥 Download Dataset",
-            csv,
-            "creditcard_dataset.csv",
-            "text/csv"
-        )
+✅ Transaction amounts are highly right-skewed due to a few very large payments.
 
-        st.write("---")
+✅ Most transactions occur within a relatively low amount range.
 
-        st.subheader("Project Information")
+✅ PCA-transformed features show limited direct correlation.
 
-        st.markdown("""
-### 🏦 Banking Fraud Detection Analysis
+✅ Statistical analysis confirms that the dataset is highly imbalanced and suitable for fraud detection modeling.
+""")
+    # ============================================
+# BUSINESS INSIGHTS
+# ============================================
 
-**Major Project**
+elif page == "Business Insights":
 
-**Tools Used**
+    st.title("💼 Business Insights")
+
+    st.markdown(
+        "Key findings and recommendations from the fraud detection analysis."
+    )
+
+    st.write("---")
+
+    # KPI Cards
+    c1, c2, c3, c4 = st.columns(4)
+
+    c1.metric("Fraud Rate", f"{fraud_rate:.4f}%")
+    c2.metric("High Value Transactions", high_value_transactions)
+    c3.metric("Average Amount", f"${average_amount:.2f}")
+    c4.metric("Maximum Amount", f"${highest_amount:.2f}")
+
+    st.write("---")
+
+    # High Value Transactions
+    st.subheader("💰 Top 15 Highest Transactions")
+
+    top15 = df.nlargest(
+        15,
+        "Amount"
+    )[
+        ["Time", "Amount", "Class"]
+    ]
+
+    st.dataframe(
+        top15,
+        use_container_width=True,
+        hide_index=True
+    )
+
+    st.write("---")
+
+    # Fraud Comparison
+
+    fraud_summary = pd.DataFrame({
+        "Category": ["Legitimate", "Fraud"],
+        "Count": [
+            legitimate_transactions,
+            fraud_transactions
+        ]
+    })
+
+    fig = px.bar(
+        fraud_summary,
+        x="Category",
+        y="Count",
+        color="Category",
+        color_discrete_map={
+            "Legitimate": "#2ecc71",
+            "Fraud": "#e74c3c"
+        }
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    st.write("---")
+
+    st.subheader("📌 Key Business Findings")
+
+    st.success("""
+✔ Fraud transactions account for only a very small percentage of all transactions.
+
+✔ Most transactions involve relatively small payment amounts.
+
+✔ A limited number of high-value transactions contribute significantly to the overall transaction value.
+
+✔ Continuous monitoring is essential because fraud patterns evolve over time.
+
+✔ Feature engineering improves fraud analysis and future machine learning performance.
+""")
+
+    st.write("---")
+
+    st.subheader("🚀 Recommendations")
+
+    st.info("""
+• Deploy Real-Time Fraud Detection
+
+• Verify High Value Transactions
+
+• Use Machine Learning Models
+
+• Monitor Hourly Fraud Trends
+
+• Improve Customer Authentication
+
+• Build Power BI Executive Dashboards
+
+• Regularly Retrain Fraud Models
+""")
+
+    st.write("---")
+
+    csv = df.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        "📥 Download Dataset",
+        csv,
+        "creditcard_dataset.csv",
+        "text/csv"
+    )
+
+# ============================================
+# ABOUT PROJECT
+# ============================================
+
+elif page == "About Project":
+
+    st.title("ℹ️ About Project")
+
+    st.markdown("""
+# 🏦 Banking Fraud Detection Analysis
+
+This project demonstrates an end-to-end Data Analytics workflow using the
+Credit Card Fraud Detection Dataset.
+
+### Technologies Used
 
 - Python
 - Pandas
@@ -480,92 +1025,68 @@ except FileNotFoundError:
 - Streamlit
 - SQL
 - Scikit-learn
+- Statistics
 - Power BI
+- Git & GitHub
 
-**Dataset**
+### Dataset
 
 Credit Card Fraud Detection Dataset
 
-**Total Features:** 31
+- Total Transactions: **284,807**
+- Fraud Transactions: **492**
+- Legitimate Transactions: **284,315**
+- Features: **31**
 
-**Transactions:** 284,807
+### Project Workflow
 
-**Fraud Cases:** 492
+- Data Cleaning
+- Data Preprocessing
+- Exploratory Data Analysis
+- Statistical Analysis
+- Feature Engineering
+- Data Visualization
+- Business Insights
+- Dashboard Development
 
-**Developer**
+### Future Enhancements
 
-Your Name
-        """)
+- Machine Learning Model
+- Real-Time Fraud Detection
+- Cloud Deployment
+- Automated Alerts
+- Power BI Integration
+""")
 
-# -------------------------------------------------
-# Footer
-# -------------------------------------------------
+    st.write("---")
+
+    st.subheader("👨‍💻 Developer")
+
+    st.info("""
+Major Project
+
+Developed using Streamlit & Python
+
+Designed for Banking Fraud Detection Analytics
+""")
+
+# ============================================
+# FOOTER
+# ============================================
 
 st.write("---")
 
 st.markdown(
 """
-<div style='text-align:center'>
-<h4>🏦 Banking Fraud Detection Analysis Dashboard</h4>
-<p>Developed using Streamlit | Python | Plotly | SQL | Power BI</p>
+<div style='text-align:center;'>
+
+### 🏦 Banking Fraud Detection Analysis Dashboard
+
+Developed using ❤️ Streamlit | Python | Plotly | SQL | Power BI
+
+© 2026 All Rights Reserved
+
 </div>
 """,
 unsafe_allow_html=True
 )
-st.markdown("""
-<div style="background:linear-gradient(90deg,#0f4c81,#0077b6);
-padding:25px;
-border-radius:12px;
-color:white;">
-<h1>🏦 Banking Fraud Detection Analysis</h1>
-<p>Interactive Banking Analytics Dashboard using Python, SQL, Statistics, Plotly & Streamlit</p>
-</div>
-""", unsafe_allow_html=True)
-
-st.write("")
-col1, col2, col3, col4 = st.columns(4)
-
-col1.info("📂 Dataset\n\n284,807 Transactions")
-col2.success("💳 Fraud Cases\n\n492")
-col3.warning("📈 Features\n\n31")
-col4.error("📊 Fraud Rate\n\n0.172%")
-with st.expander("📖 About Dataset"):
-
-    st.write("""
-This project uses the Credit Card Fraud Detection dataset.
-
-• Total Transactions : 284,807
-
-• Features : 31
-
-• Fraud Cases : 492
-
-• Legitimate Cases : 284,315
-
-• Highly Imbalanced Dataset
-""")
-show_data = st.checkbox("Show Full Dataset")
-
-if show_data:
-    st.dataframe(df)
-st.download_button(
-    "📥 Download Cleaned Dataset",
-    df.to_csv(index=False),
-    "cleaned_creditcard.csv",
-    "text/csv"
-)
-st.markdown("---")
-
-st.markdown("""
-<center>
-
-### 🏦 Banking Fraud Detection Analysis
-
-Developed as a Major Project using
-
-Python • Pandas • Plotly • Streamlit • SQL • Power BI
-
-© 2026 All Rights Reserved
-
-</center>
-""", unsafe_allow_html=True)
