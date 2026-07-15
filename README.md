@@ -1,5 +1,3 @@
-# Banking Fraud Detection Analysis – Major Project
-
 # 🏦 Banking Fraud Detection Analysis – Major Project
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
@@ -197,6 +195,22 @@ The dataset consists of **284,807 transactions** with **31 features**, including
 
 ---
 
+## 📑 Table of Contents
+
+- Project Overview
+- Problem Statement
+- Live Demo
+- Features
+- Requirements
+- Project Objectives
+- Dataset Information
+- Technologies Used
+- Project Workflow
+- Dashboard KPIs
+- Business Insights
+- Future Scope
+- Conclusion
+  
 ## Technologies Used
 
 * Python
