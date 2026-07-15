@@ -24,6 +24,74 @@ The objective of this project is to analyze a real-world credit card transaction
 
 ___
 
+---
+
+## Streamlit Deployment
+
+This project can be deployed using **Streamlit Community Cloud**.
+
+### Required Files
+
+Before deploying, ensure the repository contains the following files:
+
+```text
+app.py
+requirements.txt
+README.md
+```
+
+### Deploy Steps
+
+1. Push the project to a public GitHub repository.
+2. Visit https://share.streamlit.io/
+3. Sign in using your GitHub account.
+4. Click **Create App**.
+5. Select your GitHub repository.
+6. Select the **main** branch.
+7. Enter the **Main file path** as:
+
+```text
+app.py
+```
+
+8. Click **Deploy**.
+
+The application will be available through a public Streamlit URL.
+
+---
+
+## Requirements
+
+Install the required Python libraries using:
+
+```bash
+pip install -r requirements.txt
+```
+
+The `requirements.txt` file contains:
+
+```text
+streamlit
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+scipy
+```
+
+---
+
+## Running the Streamlit App Locally
+
+After installing the dependencies, run:
+
+```bash
+streamlit run app.py
+```
+
+The application will automatically open in your web browser.
+
 
 ## Project Objectives
 
@@ -205,6 +273,8 @@ The dashboard includes the following key performance indicators:
 ```text
 Banking-Fraud-Detection-Analysis-Major-Project/
 │
+├── app.py
+├── requirements.txt
 ├── Banking_Fraud_Detection_Analysis_Major_Project.ipynb
 ├── creditcard.csv
 ├── cleaned_creditcard.csv
