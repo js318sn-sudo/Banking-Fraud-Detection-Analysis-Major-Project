@@ -26,6 +26,12 @@ ___
 
 This project can be deployed using **Streamlit Community Cloud**.
 
+### Link
+
+[](https://banking-fraud-detection-analysis-major-project-tfet42awulazqn9.streamlit.app/)
+
+---
+
 ### Required Files
 
 Before deploying, ensure the repository contains the following files:
