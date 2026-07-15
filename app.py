@@ -1075,16 +1075,17 @@ Designed for Banking Fraud Detection Analytics
 # ============================================
 
 st.write("---")
-
 st.markdown(
 """
 <div style='text-align:center;'>
 
 ### 🏦 Banking Fraud Detection Analysis Dashboard
 
-Developed using ❤️ Streamlit | Python | Plotly | SQL | Power BI
+Developed using Streamlit | Python | Pandas | Plotly | SQL | Power BI
 
-© 2026 All Rights Reserved
+Version 1.0
+
+© 2026 Banking Fraud Detection Analysis Project
 
 </div>
 """,
