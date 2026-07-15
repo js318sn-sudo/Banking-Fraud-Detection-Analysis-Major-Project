@@ -1,5 +1,14 @@
 # Banking Fraud Detection Analysis – Major Project
 
+# 🏦 Banking Fraud Detection Analysis – Major Project
+
+![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-Cloud-red?logo=streamlit)
+![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-blue?logo=pandas)
+![NumPy](https://img.shields.io/badge/NumPy-Numerical-orange?logo=numpy)
+![PowerBI](https://img.shields.io/badge/Power%20BI-Dashboard-yellow)
+![GitHub](https://img.shields.io/badge/GitHub-Repository-black?logo=github)
+
 ## Project Overview
 
 This project presents an end-to-end data analytics solution for analyzing banking transaction data to identify fraudulent activities, understand transaction patterns, and generate actionable business insights. Using a real-world credit card transaction dataset, the project demonstrates the complete data analytics lifecycle, including data cleaning, exploratory data analysis, statistical analysis, SQL-based querying, feature engineering, data transformation, and dashboard preparation.
@@ -21,6 +30,13 @@ The objective of this project is to analyze a real-world credit card transaction
 ![Banking Fraud Detection Analysis Dashboard](Banking_Fraud_Detection_Analysis_Dashboard.png)
 
 ___
+
+## 🚀 Live Demo
+
+🌐 **Streamlit Application**
+
+https://banking-fraud-detection-analysis-major-project-tfet42awulazqn9.streamlit.app/
+
 
 ## Streamlit Deployment
 
@@ -57,6 +73,19 @@ The application will be available through a public Streamlit URL.
 
 ---
 
+## ✨ Features
+
+- 📊 Interactive Banking Dashboard
+- 📈 Executive KPI Cards
+- 🔍 Fraud Transaction Analysis
+- 📉 Statistical Analysis
+- 📂 Dataset Overview
+- 📊 Exploratory Data Analysis (EDA)
+- 📌 Business Insights
+- 📥 Download Processed Dataset
+- 🎯 Interactive Plotly Charts
+- ⚡ Streamlit Cloud Deployment
+  
 ## Requirements
 
 Install the required Python libraries using:
@@ -103,6 +132,28 @@ The application will automatically open in your web browser.
 * Generate business insights and recommendations.
 
 ---
+
+## 📊 Project Results
+
+| Metric | Value |
+|---------|------:|
+| Total Transactions | 284,807 |
+| Fraud Transactions | 492 |
+| Legitimate Transactions | 284,315 |
+| Fraud Rate | 0.1727% |
+| Features | 31 |
+| Dataset Type | Highly Imbalanced |
+
+## 📊 Dashboard Modules
+
+The Streamlit application includes the following interactive pages:
+
+- 🏠 Dashboard
+- 📂 Dataset Overview
+- 📊 Exploratory Data Analysis
+- 📈 Statistical Analysis
+- 💼 Business Insights
+- ℹ️ About Project
 
 ## Dataset Information
 
@@ -341,6 +392,31 @@ The project includes a professional dashboard presenting:
 
 ---
 
+## 💡 Skills Demonstrated
+
+- Data Cleaning
+- Data Preprocessing
+- Exploratory Data Analysis
+- Statistical Analysis
+- SQL Querying
+- Feature Engineering
+- Data Visualization
+- Business Intelligence
+- Dashboard Development
+- Streamlit Deployment
+- Git & GitHub
+
+  ## 🚀 Future Scope
+
+- Machine Learning Fraud Prediction
+- Deep Learning Models
+- Real-Time Fraud Monitoring
+- Automated Fraud Alert System
+- Cloud Database Integration
+- REST API Deployment
+- Docker Containerization
+- CI/CD Pipeline
+  
 ## Conclusion
 
 This project demonstrates a complete data analytics workflow using a real-world banking transaction dataset. By integrating Python, SQL, statistics, data visualization, and feature engineering, it provides meaningful insights into fraudulent transaction patterns and establishes a strong foundation for future predictive analytics and business intelligence solutions.
