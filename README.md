@@ -269,15 +269,15 @@ The dashboard includes the following key performance indicators:
 
 ```text
 Banking-Fraud-Detection-Analysis-Major-Project/
-│
-├── app.py
-├── requirements.txt
-├── Banking_Fraud_Detection_Analysis_Major_Project.ipynb
-├── creditcard.csv
-├── cleaned_creditcard.csv
-├── final_creditcard_dataset.csv
-├── Banking_Fraud_Detection_Analysis_Dashboard.png
-└── README.md
+│── app.py
+│── requirements.txt
+│── README.md
+│── creditcard.csv
+│── cleaned_creditcard.csv
+│── final_creditcard_dataset.csv
+│── Banking_Fraud_Detection_Analysis_Dashboard.png
+└── .streamlit/
+    └── config.toml
 ```
 
 ---
