@@ -199,15 +199,25 @@ The dataset consists of **284,807 transactions** with **31 features**, including
 
 - Project Overview
 - Problem Statement
+- Dashboard
 - Live Demo
+- Streamlit Deployment
 - Features
 - Requirements
 - Project Objectives
+- Project Results
+- Dashboard Modules
 - Dataset Information
 - Technologies Used
 - Project Workflow
+- Key Analyses Performed
 - Dashboard KPIs
+- Project Structure
+- How to Run
 - Business Insights
+- Recommendations
+- Future Enhancements
+- Skills Demonstrated
 - Future Scope
 - Conclusion
   
@@ -420,7 +430,7 @@ The project includes a professional dashboard presenting:
 - Streamlit Deployment
 - Git & GitHub
 
-  ## 🚀 Future Scope
+ ## 🚀 Future Scope
 
 - Machine Learning Fraud Prediction
 - Deep Learning Models
