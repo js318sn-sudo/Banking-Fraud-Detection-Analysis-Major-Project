@@ -13,10 +13,9 @@ st.markdown("""
 This application provides an interactive overview of the Credit Card Fraud Detection dataset.
 """)
 
-uploaded_file = st.file_uploader("Upload creditcard.csv", type=["csv"])
-
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
+try:
+    # Automatically load dataset from the repository
+    df = pd.read_csv("creditcard.csv")
 
     st.success("Dataset Loaded Successfully!")
 
@@ -31,5 +30,6 @@ if uploaded_file is not None:
 
     st.subheader("Fraud Distribution")
     st.bar_chart(df["Class"].value_counts())
-else:
-    st.info("Upload creditcard.csv to begin.")
+
+except FileNotFoundError:
+    st.error("creditcard.csv not found. Please add creditcard.csv to the GitHub repository.")
